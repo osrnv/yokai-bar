@@ -4,7 +4,7 @@
 
 const INGREDIENTS = [
     { id: 'sake',    name: 'Сакэ',    emoji: '🍶' },
-    { id: 'umeshu',  name: 'Умэсю',   emoji: '🍑' },
+    { id: 'umeshu',  name: 'Умэсю',   emoji: '🍾' },
     { id: 'yuzu',    name: 'Юдзу',    emoji: '🍋' },
     { id: 'persim',  name: 'Хурма',   emoji: '🟠' },
     { id: 'ginger',  name: 'Имбирь',  emoji: '🥔' },
