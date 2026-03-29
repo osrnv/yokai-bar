@@ -1,0 +1,598 @@
+/* ============================================
+   БАЗОВЫЕ СТИЛИ
+   ============================================ */
+
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #e8e0d4;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+}
+
+/* ============================================
+   ЭКРАНЫ
+   ============================================ */
+
+.screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* ============================================
+   ЭКРАН 1: ПРИВЕТСТВИЕ
+   ============================================ */
+
+#screen-welcome {
+    background: url('../assets/backgrounds/welcome.png') center/cover no-repeat;
+    background-color: #0a0a14;
+    justify-content: flex-end;
+}
+
+@media (orientation: landscape) {
+    #screen-welcome {
+        background-image: url('../assets/backgrounds/welcome-wide.png');
+    }
+}
+
+.welcome-container {
+    text-align: center;
+    padding: 24px 24px 60px;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* ============================================
+   ЭКРАН 2: БАРМЕН
+   ============================================ */
+
+#screen-barman {
+    background: linear-gradient(180deg, #1a1520 0%, #2a1f28 50%, #1a1520 100%);
+    justify-content: center;
+}
+
+.barman-container {
+    text-align: center;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.barman-portrait {
+    font-size: 5em;
+    margin-bottom: 20px;
+}
+
+.barman-turned {
+    transform: scaleX(-1);
+    opacity: 0.6;
+}
+
+.dialogue-box {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.barman-name {
+    font-size: 0.8em;
+    color: #c4a87a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.barman-text {
+    font-size: 0.95em;
+    line-height: 1.7;
+    color: #d4ccc0;
+}
+
+.barman-text .typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #c4a87a;
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+    vertical-align: text-bottom;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* ============================================
+   КНОПКИ
+   ============================================ */
+
+.btn {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+    letter-spacing: 1px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    transform: none;
+}
+
+.btn-enter {
+    background: linear-gradient(135deg, #c4a87a, #a08050);
+    color: #1a1520;
+}
+
+.btn-accept {
+    background: linear-gradient(135deg, #c4a87a, #a08050);
+    color: #1a1520;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.btn-accept.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.btn-confirm {
+    background: linear-gradient(135deg, #c4a87a, #a08050);
+    color: #1a1520;
+    margin-top: auto;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #7aaa6e, #5a8a4e);
+    color: #1a1520;
+}
+
+.btn-retry {
+    background: linear-gradient(135deg, #aa6e6e, #8a4e4e);
+    color: #f0e6d3;
+}
+
+/* ============================================
+   ЭКРАН 3: ИГРА
+   ============================================ */
+
+#screen-game {
+    background: linear-gradient(180deg, #141018 0%, #1c1624 50%, #141018 100%);
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    height: 100dvh;
+    padding: 12px 16px 16px;
+    margin: 0 auto;
+}
+
+/* Счётчик */
+.game-header {
+    text-align: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.attempt-counter {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    color: #a09890;
+    letter-spacing: 1px;
+}
+
+/* История */
+.history-board {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 4px 0;
+    margin-bottom: 8px;
+
+    /* Скроллбар */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.history-board::-webkit-scrollbar {
+    width: 4px;
+}
+
+.history-board::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+}
+
+.history-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    animation: rowAppear 0.3s ease;
+}
+
+@keyframes rowAppear {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.history-num {
+    font-size: 0.75em;
+    color: #5a5450;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.history-ingredients {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.history-ingredient {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6em;
+    text-align: center;
+    line-height: 1.1;
+    color: #b0a898;
+    padding: 2px;
+}
+
+.history-hints {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    min-width: 56px;
+    justify-content: center;
+}
+
+.hint-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.85em;
+}
+
+.hint-group .moon {
+    font-size: 1em;
+}
+
+.hint-group .count {
+    font-size: 0.85em;
+    font-weight: bold;
+    min-width: 10px;
+}
+
+.hint-full .count { color: #f0d060; }
+.hint-half .count { color: #8ab0d0; }
+
+/* Текущая попытка */
+.current-section {
+    flex-shrink: 0;
+    margin-bottom: 8px;
+}
+
+.current-slots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.slot {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed rgba(196, 168, 122, 0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em;
+    text-align: center;
+    line-height: 1.1;
+    color: #6a6060;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s;
+    cursor: default;
+    padding: 4px;
+}
+
+.slot.filled {
+    border-color: #c4a87a;
+    border-style: solid;
+    background: rgba(196, 168, 122, 0.12);
+    color: #e8dcc8;
+    cursor: pointer;
+    animation: slotPop 0.2s ease;
+}
+
+@keyframes slotPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.slot .slot-number {
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    font-size: 0.55em;
+    color: #5a5450;
+}
+
+/* Позиционирование для номеров */
+.slot {
+    position: relative;
+}
+
+/* Палитра */
+.ingredient-palette {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+.palette-item {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 4px;
+    gap: 2px;
+}
+
+.palette-item:active:not(.disabled) {
+    transform: scale(0.92);
+    background: rgba(196, 168, 122, 0.2);
+}
+
+.palette-item.disabled {
+    opacity: 0.2;
+    cursor: default;
+    border-color: transparent;
+}
+
+.palette-emoji {
+    font-size: 1.4em;
+}
+
+.palette-name {
+    font-size: 0.55em;
+    color: #a09890;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.palette-item.disabled .palette-name {
+    color: #504840;
+}
+
+/* ============================================
+   ЭКРАНЫ РЕЗУЛЬТАТА (4 и 5)
+   ============================================ */
+
+#screen-win {
+    background: linear-gradient(180deg, #1a1e14 0%, #2a2818 50%, #1a1e14 100%);
+    justify-content: center;
+}
+
+#screen-lose {
+    background: linear-gradient(180deg, #1a1418 0%, #201418 50%, #1a1418 100%);
+    justify-content: center;
+}
+
+.result-container {
+    text-align: center;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.barman-reaction {
+    font-style: italic;
+    color: #a09888;
+    margin-bottom: 24px;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+/* Карточка коктейля */
+.cocktail-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(196, 168, 122, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card-dark {
+    border-color: rgba(170, 110, 110, 0.3);
+}
+
+.cocktail-emoji {
+    font-size: 3em;
+    margin-bottom: 8px;
+}
+
+.cocktail-name {
+    font-size: 1.4em;
+    font-weight: 300;
+    color: #f0e6d3;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.cocktail-recipe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.recipe-step {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.8em;
+    color: #c4b8a4;
+}
+
+.recipe-arrow {
+    color: #5a5450;
+    font-size: 0.8em;
+}
+
+.cocktail-legend {
+    font-style: italic;
+    font-size: 0.85em;
+    color: #8a8070;
+    line-height: 1.6;
+}
+
+.reveal-label {
+    font-size: 0.8em;
+    color: #6a5a5a;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.result-stats {
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #a09888;
+}
+
+/* ============================================
+   АНИМАЦИЯ SHAKE
+   ============================================ */
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.4s ease;
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+
+@media (max-height: 680px) {
+    .game-container {
+        padding: 8px 12px 12px;
+    }
+
+    .slot {
+        width: 52px;
+        height: 52px;
+    }
+
+    .history-ingredient {
+        width: 34px;
+        height: 34px;
+        font-size: 0.5em;
+    }
+
+    .palette-emoji {
+        font-size: 1.1em;
+    }
+
+    .palette-name {
+        font-size: 0.5em;
+    }
+}
+
+@media (max-height: 600px) {
+    .slot {
+        width: 46px;
+        height: 46px;
+    }
+
+    .ingredient-palette {
+        gap: 4px;
+    }
+
+    .btn-confirm {
+        padding: 10px 24px;
+        font-size: 0.95em;
+    }
+}
+
+/* Широкие экраны (планшет) */
+@media (min-width: 500px) {
+    .slot {
+        width: 68px;
+        height: 68px;
+        font-size: 0.8em;
+    }
+
+    .history-ingredient {
+        width: 46px;
+        height: 46px;
+        font-size: 0.65em;
+    }
+}
