@@ -506,27 +506,6 @@ function showWin() {
 function showLose() {
     var cocktail = state.cocktail;
 
-    document.getElementById('lose-name').textContent = cocktail.name;
-
-    var recipeContainer = document.getElementById('lose-recipe');
-    recipeContainer.innerHTML = '';
-
-    for (var i = 0; i < cocktail.recipe.length; i++) {
-        var ing = getIngredient(cocktail.recipe[i]);
-
-        var step = document.createElement('span');
-        step.className = 'recipe-step';
-        step.textContent = ing.emoji + ' ' + ing.name;
-        recipeContainer.appendChild(step);
-
-        if (i < cocktail.recipe.length - 1) {
-            var arrow = document.createElement('span');
-            arrow.className = 'recipe-arrow';
-            arrow.textContent = '→';
-            recipeContainer.appendChild(arrow);
-        }
-    }
-
     goToScreen('screen-lose');
 }
 

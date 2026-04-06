@@ -444,6 +444,11 @@ body {
     width: 100%;
 }
 
+.result-emoji {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
 .barman-reaction {
     font-style: italic;
     color: #a09888;
@@ -459,10 +464,6 @@ body {
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 20px;
-}
-
-.card-dark {
-    border-color: rgba(170, 110, 110, 0.3);
 }
 
 .cocktail-emoji {
@@ -505,14 +506,6 @@ body {
     font-size: 0.85em;
     color: #8a8070;
     line-height: 1.6;
-}
-
-.reveal-label {
-    font-size: 0.8em;
-    color: #6a5a5a;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
 }
 
 .result-stats {

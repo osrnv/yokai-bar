@@ -62,10 +62,9 @@
 
     <!-- ===== ЭКРАН 4: ПОБЕДА ===== -->
     <div id="screen-win" class="screen">
-        <div class="result-container win-container">
+        <div class="result-container">
             <div class="barman-portrait">🧑‍🍳</div>
             <div class="barman-reaction">«Безупречно. Ты чувствуешь вкус так же, как я.»</div>
-
             <div class="cocktail-card">
                 <div class="cocktail-emoji" id="win-emoji">🍸</div>
                 <h2 id="win-name" class="cocktail-name"></h2>
@@ -83,19 +82,12 @@
 
     <!-- ===== ЭКРАН 5: ПОРАЖЕНИЕ ===== -->
     <div id="screen-lose" class="screen">
-        <div class="result-container lose-container">
-            <div class="barman-portrait barman-turned">🧑‍🍳</div>
-            <div class="barman-reaction">«Не каждый способен понять этот бар. Может, в следующий раз.»</div>
-
-            <div class="cocktail-card card-dark">
-                <p class="reveal-label">Правильный рецепт:</p>
-                <h2 id="lose-name" class="cocktail-name"></h2>
-                <div id="lose-recipe" class="cocktail-recipe"></div>
-            </div>
-
-            <button class="btn btn-retry" onclick="retryCocktail()">
-                Попробовать снова
-            </button>
+        <div class="result-container">
+            <div class="result-emoji" id="lose-emoji">🧑‍🍳</div>
+            <p class="barman-reaction" id="lose-phrase">
+                «Не каждый способен понять этот бар. Может, в следующий раз.»
+            </p>
+            <button class="btn btn-retry" id="btn-retry" onclick="retryCocktail()">Попробовать снова</button>
         </div>
     </div>
 
