@@ -3,14 +3,14 @@
 // ============================================
 
 const INGREDIENTS = [
-    { id: 'sake',    name: 'Сакэ',    emoji: '🍶' },
-    { id: 'umeshu',  name: 'Умэсю',   emoji: '🍾' },
-    { id: 'yuzu',    name: 'Юдзу',    emoji: '🍋' },
-    { id: 'persim',  name: 'Хурма',   emoji: '🟠' },
-    { id: 'ginger',  name: 'Имбирь',  emoji: '🥔' },
-    { id: 'sakura',  name: 'Сакура',  emoji: '🌸' },
-    { id: 'matcha',  name: 'Матча',   emoji: '🍵' },
-    { id: 'soda',    name: 'Содовая', emoji: '🥤' },
+    { id: 'sake',    name: 'Сакэ',    img: 'assets/ingredients/sake.png' },
+    { id: 'umeshu',  name: 'Умэсю',   img: 'assets/ingredients/umeshu.png' },
+    { id: 'yuzu',    name: 'Юдзу',    img: 'assets/ingredients/yuzu.png' },
+    { id: 'persim',  name: 'Хурма',   img: 'assets/ingredients/persim.png' },
+    { id: 'ginger',  name: 'Имбирь',  img: 'assets/ingredients/ginger.png' },
+    { id: 'sakura',  name: 'Сакура',  img: 'assets/ingredients/sakura.png' },
+    { id: 'matcha',  name: 'Матча',   img: 'assets/ingredients/matcha.png' },
+    { id: 'soda',    name: 'Содовая', img: 'assets/ingredients/soda.png' },
 ];
 
 const COCKTAILS = [
@@ -116,6 +116,20 @@ function getIngredient(id) {
         if (INGREDIENTS[i].id === id) return INGREDIENTS[i];
     }
     return null;
+}
+
+function createIngredientIconEl(ing) {
+    if (ing.img) {
+        var img = document.createElement('img');
+        img.className = 'ingredient-icon';
+        img.src = ing.img;
+        img.alt = ing.name;
+        return img;
+    }
+    var span = document.createElement('span');
+    span.className = 'ingredient-emoji';
+    span.textContent = ing.emoji;
+    return span;
 }
 
 function vibrate(ms) {
@@ -248,10 +262,10 @@ function startGameScreen() {
 // РЕНДЕР ИГРОВОГО ЭКРАНА
 // ============================================
 
-function renderGame() {
+function renderGame(options) {
+    options = options || {};
     renderAttemptCounter();
-    renderHistory();
-    renderCurrentSlots();
+    renderHistory(!!options.animateLastCompleted);
     renderPalette();
     renderConfirmButton();
 }
@@ -260,76 +274,117 @@ function renderAttemptCounter() {
     document.getElementById('current-attempt').textContent = state.attemptNumber;
 }
 
-function renderHistory() {
+function renderHistory(animateLastCompleted) {
     var container = document.getElementById('history');
+    var threshold = 12;
+    var stickToBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+    var prevScrollTop = container.scrollTop;
+
     container.innerHTML = '';
 
-    for (var i = 0; i < state.history.length; i++) {
-        var entry = state.history[i];
-
-        var row = document.createElement('div');
-        row.className = 'history-row';
-
-        var num = document.createElement('div');
-        num.className = 'history-num';
-        num.textContent = i + 1;
-        row.appendChild(num);
-
-        var ingredients = document.createElement('div');
-        ingredients.className = 'history-ingredients';
-
-        for (var j = 0; j < entry.guess.length; j++) {
-            var ing = getIngredient(entry.guess[j]);
-            var cell = document.createElement('div');
-            cell.className = 'history-ingredient';
-            cell.innerHTML = '<span style="font-size:1.6em">' + ing.emoji + '</span>';
-            ingredients.appendChild(cell);
+    var i;
+    for (i = 0; i < state.history.length; i++) {
+        var pastRow = buildCompletedHistoryRow(i + 1, state.history[i]);
+        if (animateLastCompleted && i === state.history.length - 1) {
+            pastRow.classList.add('history-row--enter');
         }
-        row.appendChild(ingredients);
-
-        var hints = document.createElement('div');
-        hints.className = 'history-hints';
-
-        var fullGroup = document.createElement('div');
-        fullGroup.className = 'hint-group hint-full';
-        fullGroup.innerHTML = '<span class="moon">🌕</span><span class="count">' + entry.bulls + '</span>';
-        hints.appendChild(fullGroup);
-
-        var halfGroup = document.createElement('div');
-        halfGroup.className = 'hint-group hint-half';
-        halfGroup.innerHTML = '<span class="moon">🌙</span><span class="count">' + entry.cows + '</span>';
-        hints.appendChild(halfGroup);
-
-        row.appendChild(hints);
-        container.appendChild(row);
+        container.appendChild(pastRow);
     }
 
-    container.scrollTop = container.scrollHeight;
+    if (!state.gameOver) {
+        container.appendChild(buildCurrentAttemptRow());
+    }
+
+    if (stickToBottom) {
+        container.scrollTop = container.scrollHeight;
+    } else {
+        var maxScroll = Math.max(0, container.scrollHeight - container.clientHeight);
+        container.scrollTop = Math.min(prevScrollTop, maxScroll);
+    }
 }
 
-function renderCurrentSlots() {
-    var container = document.getElementById('current-slots');
-    container.innerHTML = '';
+function buildCompletedHistoryRow(rowNum, entry) {
+    var row = document.createElement('div');
+    row.className = 'history-row';
 
-    for (var i = 0; i < CODE_LENGTH; i++) {
+    var num = document.createElement('div');
+    num.className = 'history-num';
+    num.textContent = rowNum;
+    row.appendChild(num);
+
+    var ingredients = document.createElement('div');
+    ingredients.className = 'history-ingredients';
+
+    var j;
+    for (j = 0; j < entry.guess.length; j++) {
+        var ing = getIngredient(entry.guess[j]);
+        var cell = document.createElement('div');
+        cell.className = 'history-ingredient';
+        cell.appendChild(createIngredientIconEl(ing));
+        ingredients.appendChild(cell);
+    }
+    row.appendChild(ingredients);
+
+    var hints = document.createElement('div');
+    hints.className = 'history-hints';
+
+    var fullGroup = document.createElement('div');
+    fullGroup.className = 'hint-group hint-full';
+    fullGroup.innerHTML = '<span class="moon">🌕</span><span class="count">' + entry.bulls + '</span>';
+    hints.appendChild(fullGroup);
+
+    var halfGroup = document.createElement('div');
+    halfGroup.className = 'hint-group hint-half';
+    halfGroup.innerHTML = '<span class="moon">🌙</span><span class="count">' + entry.cows + '</span>';
+    hints.appendChild(halfGroup);
+
+    row.appendChild(hints);
+    return row;
+}
+
+function buildCurrentAttemptRow() {
+    var row = document.createElement('div');
+    row.className = 'history-row history-row-current';
+
+    var num = document.createElement('div');
+    num.className = 'history-num';
+    num.textContent = state.attemptNumber;
+    row.appendChild(num);
+
+    var ingredients = document.createElement('div');
+    ingredients.className = 'history-ingredients';
+
+    var i;
+    for (i = 0; i < CODE_LENGTH; i++) {
         var slot = document.createElement('div');
         slot.className = 'slot';
 
         if (state.currentGuess[i]) {
             var ing = getIngredient(state.currentGuess[i]);
             slot.classList.add('filled');
-            slot.innerHTML = '<span style="font-size:1.8em">' + ing.emoji + '</span>';
+            slot.appendChild(createIngredientIconEl(ing));
             (function(index) {
                 slot.onclick = function() {
                     removeFromSlot(index);
                 };
             })(i);
         } else {
-            slot.innerHTML = '<span style="color:#3a3535; font-size:0.8em">' + (i + 1) + '</span>';
+            var ph = document.createElement('span');
+            ph.className = 'slot-placeholder-num';
+            ph.textContent = String(i + 1);
+            slot.appendChild(ph);
         }
 
-        container.appendChild(slot);
+        ingredients.appendChild(slot);
     }
+    row.appendChild(ingredients);
+
+    var hintsPending = document.createElement('div');
+    hintsPending.className = 'history-hints history-hints--pending';
+    row.appendChild(hintsPending);
+
+    return row;
 }
 
 function renderPalette() {
@@ -346,7 +401,14 @@ function renderPalette() {
             item.classList.add('disabled');
         }
 
-        item.innerHTML = '<span class="palette-emoji">' + ing.emoji + '</span><span class="palette-name">' + ing.name + '</span>';
+        var emojiWrap = document.createElement('span');
+        emojiWrap.className = 'palette-emoji';
+        emojiWrap.appendChild(createIngredientIconEl(ing));
+        item.appendChild(emojiWrap);
+        var nameEl = document.createElement('span');
+        nameEl.className = 'palette-name';
+        nameEl.textContent = ing.name;
+        item.appendChild(nameEl);
 
         if (!isUsed) {
             (function(id) {
@@ -376,7 +438,7 @@ function addIngredient(id) {
 
     state.currentGuess.push(id);
     vibrate(15);
-    renderCurrentSlots();
+    renderHistory();
     renderPalette();
     renderConfirmButton();
 }
@@ -386,7 +448,7 @@ function removeFromSlot(index) {
 
     state.currentGuess.splice(index, 1);
     vibrate(10);
-    renderCurrentSlots();
+    renderHistory();
     renderPalette();
     renderConfirmButton();
 }
@@ -416,20 +478,20 @@ function submitGuess() {
 
     if (result.bulls === CODE_LENGTH) {
         state.gameOver = true;
-        renderGame();
+        renderGame({ animateLastCompleted: true });
         setTimeout(function() { showWin(); }, 600);
         return;
     }
 
     if (state.attemptNumber >= MAX_ATTEMPTS) {
         state.gameOver = true;
-        renderGame();
+        renderGame({ animateLastCompleted: true });
         setTimeout(function() { showLose(); }, 600);
         return;
     }
 
     state.attemptNumber++;
-    renderGame();
+    renderGame({ animateLastCompleted: true });
 }
 
 function calculateHints(guess, secret) {
@@ -485,7 +547,8 @@ function showWin() {
 
         var step = document.createElement('span');
         step.className = 'recipe-step';
-        step.textContent = ing.emoji + ' ' + ing.name;
+        step.appendChild(createIngredientIconEl(ing));
+        step.appendChild(document.createTextNode(' ' + ing.name));
         recipeContainer.appendChild(step);
 
         if (i < cocktail.recipe.length - 1) {
@@ -528,7 +591,8 @@ function retryCocktail() {
 // ============================================
 
 function shakeSlots() {
-    var el = document.getElementById('current-slots');
+    var el = document.querySelector('.history-row-current .history-ingredients');
+    if (!el) return;
     el.classList.remove('shake');
     void el.offsetWidth;
     el.classList.add('shake');

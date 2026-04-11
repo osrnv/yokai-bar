@@ -250,6 +250,9 @@ body {
     border-radius: 12px;
     padding: 8px 10px;
     margin-bottom: 5px;
+}
+
+.history-row--enter {
     animation: rowAppear 0.3s ease;
 }
 
@@ -273,8 +276,8 @@ body {
 }
 
 .history-ingredient {
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.07);
     display: flex;
@@ -285,6 +288,20 @@ body {
     line-height: 1.1;
     color: #b0a898;
     padding: 2px;
+    overflow: hidden;
+}
+
+.history-ingredient .ingredient-emoji {
+    font-size: 1.6em;
+    line-height: 1;
+    transform: scale(2);
+    transform-origin: center center;
+}
+
+.history-ingredient .ingredient-icon {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
 }
 
 .history-hints {
@@ -315,21 +332,27 @@ body {
 .hint-full .count { color: #f0d060; }
 .hint-half .count { color: #8ab0d0; }
 
-/* Текущая попытка */
-.current-section {
-    flex-shrink: 0;
-    margin-bottom: 8px;
+.history-row-current {
+    animation: none;
 }
 
-.current-slots {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
+.history-hints--pending {
+    min-width: 56px;
+    flex-shrink: 0;
+}
+
+.history-ingredients .slot {
+    flex-shrink: 0;
+}
+
+.slot-placeholder-num {
+    color: #3a3535;
+    font-size: 0.8em;
 }
 
 .slot {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     border: 2px dashed rgba(196, 168, 122, 0.25);
     border-radius: 12px;
     display: flex;
@@ -352,6 +375,20 @@ body {
     color: #e8dcc8;
     cursor: pointer;
     animation: slotPop 0.2s ease;
+    overflow: hidden;
+}
+
+.slot.filled .ingredient-emoji {
+    font-size: 1.8em;
+    line-height: 1;
+    transform: scale(2);
+    transform-origin: center center;
+}
+
+.slot.filled .ingredient-icon {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
 }
 
 @keyframes slotPop {
@@ -390,11 +427,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     cursor: pointer;
     transition: all 0.15s;
-    padding: 4px;
-    gap: 2px;
+    padding: 6px 4px 8px;
+    gap: 6px;
+    overflow: hidden;
 }
 
 .palette-item:active:not(.disabled) {
@@ -409,14 +447,36 @@ body {
 }
 
 .palette-emoji {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
     font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.palette-emoji .ingredient-emoji {
+    transform: scale(2);
+    transform-origin: center center;
+}
+
+.palette-emoji .ingredient-icon {
+    width: 1.4em;
+    height: 1.4em;
+    object-fit: contain;
+    transform: scale(2);
+    transform-origin: center center;
 }
 
 .palette-name {
+    flex-shrink: 0;
     font-size: 0.55em;
     color: #a09890;
     text-align: center;
     line-height: 1.1;
+    width: 100%;
+    padding-top: 2px;
 }
 
 .palette-item.disabled .palette-name {
@@ -494,6 +554,20 @@ body {
     padding: 6px 10px;
     font-size: 0.8em;
     color: #c4b8a4;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.recipe-step .ingredient-icon {
+    width: 1.15em;
+    height: 1.15em;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.recipe-step .ingredient-emoji {
+    line-height: 1;
 }
 
 .recipe-arrow {
@@ -540,13 +614,13 @@ body {
     }
 
     .slot {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
     }
 
     .history-ingredient {
-        width: 34px;
-        height: 34px;
+        width: 48px;
+        height: 48px;
         font-size: 0.5em;
     }
 
@@ -561,8 +635,14 @@ body {
 
 @media (max-height: 600px) {
     .slot {
-        width: 46px;
-        height: 46px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .history-ingredient {
+        width: 36px;
+        height: 36px;
+        font-size: 0.5em;
     }
 
     .ingredient-palette {
@@ -578,14 +658,14 @@ body {
 /* Широкие экраны (планшет) */
 @media (min-width: 500px) {
     .slot {
-        width: 68px;
-        height: 68px;
+        width: 56px;
+        height: 56px;
         font-size: 0.8em;
     }
 
     .history-ingredient {
-        width: 46px;
-        height: 46px;
+        width: 56px;
+        height: 56px;
         font-size: 0.65em;
     }
 }
