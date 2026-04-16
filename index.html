@@ -18,15 +18,16 @@
 
     <!-- ===== ЭКРАН 2: ЗНАКОМСТВО С БАРМЕНОМ ===== -->
     <div id="screen-barman" class="screen">
-        <div class="barman-container">
-            <div class="barman-portrait">🧑‍🍳</div>
+        <div class="barman-illustration">
+            <img id="barman-img-1" class="barman-img barman-img--active" src="assets/backgrounds/barmen pose 1.png" alt="Бармен">
+            <img id="barman-img-2" class="barman-img" src="assets/backgrounds/barmen pose 2.png" alt="Бармен">
+        </div>
+        <div class="barman-overlay">
             <div class="dialogue-box">
                 <p class="barman-name">Бармен</p>
                 <div id="barman-text" class="barman-text"></div>
             </div>
-            <button id="btn-accept" class="btn btn-accept" onclick="acceptChallenge()">
-                Принять вызов
-            </button>
+            <button id="btn-barman-next" class="btn btn-accept visible" onclick="advanceBarmanDialogue()">Дальше</button>
         </div>
     </div>
 

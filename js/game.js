@@ -88,7 +88,27 @@ const COCKTAILS = [
     },
 ];
 
-const BARMAN_MONOLOGUE = 'Добро пожаловать. Я бармен этого заведения.\n\nУ меня есть коктейль, рецепт которого тебе предстоит разгадать. В нём четыре ингредиента — все разные. Порядок имеет значение.\n\nПосле каждой попытки я дам подсказку:\n🌕 — ингредиент угадан и стоит на своём месте.\n🌙 — ингредиент есть в рецепте, но место не то.\n\nУ тебя девять попыток. Удачи.';
+const BARMAN_STEPS = [
+    {
+        pose: 1,
+        html: 'Добро пожаловать! Рад приветствовать в нашем баре. У нас есть традиция для новых посетителей.',
+        button: 'Дальше'
+    },
+    {
+        pose: 2,
+        html: 'Я загадаю коктейль из четырёх ингредиентов. Все разные, и порядок имеет значение. У тебя будет 9 попыток.',
+        button: 'Дальше'
+    },
+    {
+        pose: 2,
+        html: 'Я буду давать подсказки после каждой попытки:' +
+              '<div class="hint-legend">' +
+                  '<div class="hint-legend-item"><span class="moon">🌕</span><span>— ингредиент угадан и стоит на своём месте.</span></div>' +
+                  '<div class="hint-legend-item"><span class="moon">🌙</span><span>— ингредиент есть в рецепте, но место не то.</span></div>' +
+              '</div>',
+        button: 'Принять вызов'
+    }
+];
 
 const MAX_ATTEMPTS = 9;
 const CODE_LENGTH = 4;
@@ -159,57 +179,39 @@ function goToScreen(screenId) {
 // ЭКРАН 2: ДИАЛОГ БАРМЕНА
 // ============================================
 
-var typingInterval = null;
-var typingDone = false;
+var barmanStep = 0;
 
 function startBarmanDialogue() {
-    var textEl = document.getElementById('barman-text');
-    var btnAccept = document.getElementById('btn-accept');
-
-    btnAccept.classList.remove('visible');
-    textEl.innerHTML = '';
-    typingDone = false;
-
-    var fullText = BARMAN_MONOLOGUE;
-    var charIndex = 0;
-
-    if (typingInterval) {
-        clearInterval(typingInterval);
-        typingInterval = null;
-    }
-
-    typingInterval = setInterval(function() {
-        if (charIndex >= fullText.length) {
-            clearInterval(typingInterval);
-            typingInterval = null;
-            typingDone = true;
-            textEl.innerHTML = formatBarmanText(fullText);
-            btnAccept.classList.add('visible');
-            return;
-        }
-
-        charIndex++;
-        var current = fullText.substring(0, charIndex);
-        textEl.innerHTML = formatBarmanText(current) + '<span class="typing-cursor"></span>';
-    }, 30);
-
-    var barmanScreen = document.getElementById('screen-barman');
-    barmanScreen.onclick = function(e) {
-        if (e.target.closest('.btn')) return;
-        if (typingDone) return;
-
-        if (typingInterval) {
-            clearInterval(typingInterval);
-            typingInterval = null;
-        }
-        typingDone = true;
-        textEl.innerHTML = formatBarmanText(fullText);
-        btnAccept.classList.add('visible');
-    };
+    barmanStep = 0;
+    renderBarmanStep();
 }
 
-function formatBarmanText(text) {
-    return text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+function renderBarmanStep() {
+    var step = BARMAN_STEPS[barmanStep];
+    if (!step) return;
+
+    var img1 = document.getElementById('barman-img-1');
+    var img2 = document.getElementById('barman-img-2');
+    img1.classList.toggle('barman-img--active', step.pose === 1);
+    img2.classList.toggle('barman-img--active', step.pose === 2);
+
+    var textEl = document.getElementById('barman-text');
+    textEl.classList.remove('barman-text--fade-in');
+    void textEl.offsetWidth;
+    textEl.innerHTML = step.html;
+    textEl.classList.add('barman-text--fade-in');
+
+    var btn = document.getElementById('btn-barman-next');
+    btn.textContent = step.button;
+}
+
+function advanceBarmanDialogue() {
+    if (barmanStep < BARMAN_STEPS.length - 1) {
+        barmanStep++;
+        renderBarmanStep();
+    } else {
+        acceptChallenge();
+    }
 }
 
 // ============================================

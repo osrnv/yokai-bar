@@ -62,15 +62,9 @@ body {
    ============================================ */
 
 #screen-barman {
-    background: linear-gradient(180deg, #1a1520 0%, #2a1f28 50%, #1a1520 100%);
-    justify-content: center;
-}
-
-.barman-container {
-    text-align: center;
-    padding: 24px;
-    max-width: 400px;
-    width: 100%;
+    background: #0a0a14;
+    padding: 0;
+    overflow: hidden;
 }
 
 .barman-portrait {
@@ -83,13 +77,71 @@ body {
     opacity: 0.6;
 }
 
+/* Иллюстрация — абсолютно спозиционирована внутри #screen-barman и
+   ограничена по ширине так же, как игровое поле (max-width: 400px).
+   left: 50% + translateX(-50%) — горизонтальное центрирование внутри screen.
+   top/bottom: 0 — тянется на всю высоту этой колонки.
+   display: grid + grid-area 1/1 на обеих <img> кладёт их в одну ячейку:
+   переключение активной меняет только opacity (crossfade) без скачков. */
+.barman-illustration {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    width: 100%;
+    max-width: 400px;
+    z-index: 0;
+}
+
+.barman-img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.barman-img--active {
+    opacity: 1;
+}
+
+/* Оверлей с диалогом и кнопкой — накладывается поверх иллюстрации,
+   ограничен той же max-width: 400px и прибит к низу колонки. */
+.barman-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 400px;
+    z-index: 1;
+    padding: 80px 24px 32px;
+    text-align: center;
+    background: linear-gradient(to top,
+        rgba(10, 10, 20, 0.92) 0%,
+        rgba(10, 10, 20, 0.78) 45%,
+        rgba(10, 10, 20, 0) 100%);
+}
+
+.barman-overlay .btn {
+    margin: 0 auto;
+}
+
 .dialogue-box {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(20, 15, 25, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
     padding: 20px;
-    margin-bottom: 24px;
+    margin: 0 auto 24px;
+    max-width: 400px;
     text-align: left;
+    min-height: 150px;
 }
 
 .barman-name {
@@ -106,19 +158,33 @@ body {
     color: #d4ccc0;
 }
 
-.barman-text .typing-cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: #c4a87a;
-    margin-left: 2px;
-    animation: blink 0.8s infinite;
-    vertical-align: text-bottom;
+.barman-text.barman-text--fade-in {
+    animation: barmanTextFadeIn 0.45s ease both;
 }
 
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+@keyframes barmanTextFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hint-legend {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hint-legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.hint-legend-item .moon {
+    font-size: 1.1em;
+    flex-shrink: 0;
 }
 
 /* ============================================
