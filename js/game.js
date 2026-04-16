@@ -65,7 +65,7 @@ const COCKTAILS = [
     {
         name: 'Маска Но',
         recipe: ['sake', 'umeshu', 'soda', 'ginger'],
-        legend: 'В театре Но маска не скрывает лицо. Она показывает настоящее.',
+        legend: 'Говорят, у этого коктейля два вкуса. Но второй ты узнаёшь только наутро.',
         emoji: '🎭'
     },
     {
@@ -106,6 +106,9 @@ var state = {
     playedCocktails: [],
     lastCocktailIndex: -1
 };
+
+/** DOM-узел ряда текущей попытки (живёт в #history); не сбрасывать при частичных обновлениях */
+var currentHistoryRowEl = null;
 
 // ============================================
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
@@ -254,6 +257,10 @@ function startGameScreen() {
     state.attemptNumber = 1;
     state.gameOver = false;
 
+    currentHistoryRowEl = null;
+    var pal = document.getElementById('palette');
+    if (pal) delete pal.dataset.paletteClickBound;
+
     goToScreen('screen-game');
     renderGame();
 }
@@ -274,34 +281,137 @@ function renderAttemptCounter() {
     document.getElementById('current-attempt').textContent = state.attemptNumber;
 }
 
+function applyHistoryScroll(board, stickToBottom, prevScrollTop) {
+    if (stickToBottom) {
+        board.scrollTop = board.scrollHeight;
+    } else {
+        var maxScroll = Math.max(0, board.scrollHeight - board.clientHeight);
+        board.scrollTop = Math.min(prevScrollTop, maxScroll);
+    }
+}
+
+function collectPastRowsBefore(board, beforeEl) {
+    var out = [];
+    var c = board.firstChild;
+    while (c && c !== beforeEl) {
+        if (c.classList && c.classList.contains('history-row')) {
+            out.push(c);
+        }
+        c = c.nextSibling;
+    }
+    return out;
+}
+
+function syncPastRowsBefore(board, beforeEl, animateLastCompleted) {
+    var pastNodes = collectPastRowsBefore(board, beforeEl);
+    var n = pastNodes.length;
+    var h = state.history.length;
+    var i;
+    if (n < h) {
+        for (i = n; i < h; i++) {
+            var row = buildCompletedHistoryRow(i + 1, state.history[i]);
+            if (animateLastCompleted && i === h - 1) {
+                row.classList.add('history-row--enter');
+            }
+            board.insertBefore(row, beforeEl);
+        }
+    } else if (n > h) {
+        for (i = n - 1; i >= h; i--) {
+            pastNodes[i].remove();
+        }
+    }
+}
+
+function clearElementChildren(el) {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
+    }
+}
+
+function updateCurrentAttemptRowDOM(row) {
+    var num = row.querySelector('.history-num');
+    if (num) {
+        num.textContent = String(state.attemptNumber);
+    }
+    var ingredients = row.querySelector('.history-ingredients');
+    if (!ingredients) {
+        return;
+    }
+    var slots = ingredients.querySelectorAll('.slot');
+    var j;
+    if (slots.length !== CODE_LENGTH) {
+        clearElementChildren(ingredients);
+        for (j = 0; j < CODE_LENGTH; j++) {
+            var emptySlot = document.createElement('div');
+            emptySlot.className = 'slot';
+            ingredients.appendChild(emptySlot);
+        }
+        slots = ingredients.querySelectorAll('.slot');
+    }
+    for (j = 0; j < CODE_LENGTH; j++) {
+        var slot = slots[j];
+        clearElementChildren(slot);
+        slot.className = 'slot';
+        slot.onclick = null;
+        if (state.currentGuess[j]) {
+            var ing = getIngredient(state.currentGuess[j]);
+            slot.classList.add('filled');
+            slot.appendChild(createIngredientIconEl(ing));
+            (function(index) {
+                slot.onclick = function() {
+                    removeFromSlot(index);
+                };
+            })(j);
+        } else {
+            var ph = document.createElement('span');
+            ph.className = 'slot-placeholder-num';
+            ph.textContent = String(j + 1);
+            slot.appendChild(ph);
+        }
+    }
+}
+
 function renderHistory(animateLastCompleted) {
-    var container = document.getElementById('history');
+    var board = document.getElementById('history');
     var threshold = 12;
     var stickToBottom =
-        container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
-    var prevScrollTop = container.scrollTop;
+        board.scrollHeight - board.scrollTop - board.clientHeight < threshold;
+    var prevScrollTop = board.scrollTop;
 
-    container.innerHTML = '';
-
-    var i;
-    for (i = 0; i < state.history.length; i++) {
-        var pastRow = buildCompletedHistoryRow(i + 1, state.history[i]);
-        if (animateLastCompleted && i === state.history.length - 1) {
-            pastRow.classList.add('history-row--enter');
+    if (state.gameOver) {
+        if (currentHistoryRowEl && currentHistoryRowEl.parentNode) {
+            currentHistoryRowEl.remove();
         }
-        container.appendChild(pastRow);
+        currentHistoryRowEl = null;
+        board.innerHTML = '';
+        for (var i = 0; i < state.history.length; i++) {
+            var doneRow = buildCompletedHistoryRow(i + 1, state.history[i]);
+            if (animateLastCompleted && i === state.history.length - 1) {
+                doneRow.classList.add('history-row--enter');
+            }
+            board.appendChild(doneRow);
+        }
+        applyHistoryScroll(board, stickToBottom, prevScrollTop);
+        return;
     }
 
-    if (!state.gameOver) {
-        container.appendChild(buildCurrentAttemptRow());
-    }
-
-    if (stickToBottom) {
-        container.scrollTop = container.scrollHeight;
+    if (!currentHistoryRowEl || !board.contains(currentHistoryRowEl)) {
+        board.innerHTML = '';
+        var k;
+        for (k = 0; k < state.history.length; k++) {
+            board.appendChild(buildCompletedHistoryRow(k + 1, state.history[k]));
+        }
+        currentHistoryRowEl = buildCurrentAttemptRow();
+        board.appendChild(currentHistoryRowEl);
     } else {
-        var maxScroll = Math.max(0, container.scrollHeight - container.clientHeight);
-        container.scrollTop = Math.min(prevScrollTop, maxScroll);
+        syncPastRowsBefore(board, currentHistoryRowEl, animateLastCompleted);
+        updateCurrentAttemptRowDOM(currentHistoryRowEl);
+        if (board.lastChild !== currentHistoryRowEl) {
+            board.appendChild(currentHistoryRowEl);
+        }
     }
+
+    applyHistoryScroll(board, stickToBottom, prevScrollTop);
 }
 
 function buildCompletedHistoryRow(rowNum, entry) {
@@ -341,6 +451,51 @@ function buildCompletedHistoryRow(rowNum, entry) {
 
     row.appendChild(hints);
     return row;
+}
+
+/**
+ * Превращает уже существующий в DOM ряд текущей попытки в завершённый ряд.
+ * Слоты-плейсхолдеры заменяются на ячейки-иконки, pending-подсказки — на 🌕/🌙.
+ * Это избавляет от «моргания»: новый ряд сверху не вставляется, пользователь
+ * видит, как его жёлтые слоты становятся готовой записью в истории.
+ */
+function convertCurrentRowToCompletedRow(row, attemptNumber, entry) {
+    row.classList.remove('history-row-current');
+
+    var num = row.querySelector('.history-num');
+    if (num) {
+        num.textContent = String(attemptNumber);
+    }
+
+    var ingredients = row.querySelector('.history-ingredients');
+    if (ingredients) {
+        clearElementChildren(ingredients);
+        for (var j = 0; j < entry.guess.length; j++) {
+            var ing = getIngredient(entry.guess[j]);
+            var cell = document.createElement('div');
+            cell.className = 'history-ingredient';
+            cell.appendChild(createIngredientIconEl(ing));
+            ingredients.appendChild(cell);
+        }
+    }
+
+    var oldHints = row.querySelector('.history-hints');
+    if (oldHints) {
+        var hints = document.createElement('div');
+        hints.className = 'history-hints';
+
+        var fullGroup = document.createElement('div');
+        fullGroup.className = 'hint-group hint-full';
+        fullGroup.innerHTML = '<span class="moon">🌕</span><span class="count">' + entry.bulls + '</span>';
+        hints.appendChild(fullGroup);
+
+        var halfGroup = document.createElement('div');
+        halfGroup.className = 'hint-group hint-half';
+        halfGroup.innerHTML = '<span class="moon">🌙</span><span class="count">' + entry.cows + '</span>';
+        hints.appendChild(halfGroup);
+
+        oldHints.replaceWith(hints);
+    }
 }
 
 function buildCurrentAttemptRow() {
@@ -387,38 +542,60 @@ function buildCurrentAttemptRow() {
     return row;
 }
 
+function ensurePaletteClickDelegation(container) {
+    if (container.dataset.paletteClickBound === '1') {
+        return;
+    }
+    container.dataset.paletteClickBound = '1';
+    container.addEventListener('click', function(e) {
+        if (state.gameOver) {
+            return;
+        }
+        var item = e.target.closest('.palette-item');
+        if (!item || item.classList.contains('disabled')) {
+            return;
+        }
+        var id = item.dataset.ingredientId;
+        if (id) {
+            addIngredient(id);
+        }
+    });
+}
+
 function renderPalette() {
     var container = document.getElementById('palette');
-    container.innerHTML = '';
+    if (container.children.length !== INGREDIENTS.length) {
+        container.innerHTML = '';
+        delete container.dataset.paletteClickBound;
+        var i;
+        for (i = 0; i < INGREDIENTS.length; i++) {
+            var ing = INGREDIENTS[i];
+            var item = document.createElement('div');
+            item.className = 'palette-item';
+            item.dataset.ingredientId = ing.id;
 
-    for (var i = 0; i < INGREDIENTS.length; i++) {
-        var ing = INGREDIENTS[i];
-        var item = document.createElement('div');
-        item.className = 'palette-item';
+            var emojiWrap = document.createElement('span');
+            emojiWrap.className = 'palette-emoji';
+            emojiWrap.appendChild(createIngredientIconEl(ing));
+            item.appendChild(emojiWrap);
+            var nameEl = document.createElement('span');
+            nameEl.className = 'palette-name';
+            nameEl.textContent = ing.name;
+            item.appendChild(nameEl);
 
-        var isUsed = state.currentGuess.indexOf(ing.id) !== -1;
-        if (isUsed) {
-            item.classList.add('disabled');
+            container.appendChild(item);
         }
-
-        var emojiWrap = document.createElement('span');
-        emojiWrap.className = 'palette-emoji';
-        emojiWrap.appendChild(createIngredientIconEl(ing));
-        item.appendChild(emojiWrap);
-        var nameEl = document.createElement('span');
-        nameEl.className = 'palette-name';
-        nameEl.textContent = ing.name;
-        item.appendChild(nameEl);
-
-        if (!isUsed) {
-            (function(id) {
-                item.onclick = function() {
-                    addIngredient(id);
-                };
-            })(ing.id);
+    }
+    ensurePaletteClickDelegation(container);
+    var k;
+    for (k = 0; k < INGREDIENTS.length; k++) {
+        var id = INGREDIENTS[k].id;
+        var paletteItem = container.children[k];
+        if (!paletteItem) {
+            continue;
         }
-
-        container.appendChild(item);
+        var isUsed = state.currentGuess.indexOf(id) !== -1;
+        paletteItem.classList.toggle('disabled', isUsed);
     }
 }
 
@@ -468,30 +645,55 @@ function submitGuess() {
     var secret = state.cocktail.recipe;
     var result = calculateHints(guess, secret);
 
-    state.history.push({
+    var entry = {
         guess: guess,
         bulls: result.bulls,
         cows: result.cows
-    });
+    };
 
-    state.currentGuess = [];
+    var board = document.getElementById('history');
+    var stickToBottom =
+        board.scrollHeight - board.scrollTop - board.clientHeight < 12;
 
-    if (result.bulls === CODE_LENGTH) {
-        state.gameOver = true;
-        renderGame({ animateLastCompleted: true });
-        setTimeout(function() { showWin(); }, 600);
-        return;
+    if (currentHistoryRowEl && currentHistoryRowEl.parentNode) {
+        convertCurrentRowToCompletedRow(currentHistoryRowEl, state.attemptNumber, entry);
+        currentHistoryRowEl = null;
     }
 
-    if (state.attemptNumber >= MAX_ATTEMPTS) {
+    state.history.push(entry);
+    state.currentGuess = [];
+
+    var isWin = result.bulls === CODE_LENGTH;
+    var isLose = state.attemptNumber >= MAX_ATTEMPTS;
+
+    if (isWin || isLose) {
         state.gameOver = true;
-        renderGame({ animateLastCompleted: true });
-        setTimeout(function() { showLose(); }, 600);
+        renderAttemptCounter();
+        renderPalette();
+        renderConfirmButton();
+        if (stickToBottom) {
+            board.scrollTop = board.scrollHeight;
+        }
+        setTimeout(function() {
+            if (isWin) {
+                showWin();
+            } else {
+                showLose();
+            }
+        }, 600);
         return;
     }
 
     state.attemptNumber++;
-    renderGame({ animateLastCompleted: true });
+    currentHistoryRowEl = buildCurrentAttemptRow();
+    board.appendChild(currentHistoryRowEl);
+    if (stickToBottom) {
+        board.scrollTop = board.scrollHeight;
+    }
+
+    renderAttemptCounter();
+    renderPalette();
+    renderConfirmButton();
 }
 
 function calculateHints(guess, secret) {

@@ -253,7 +253,7 @@ body {
 }
 
 .history-row--enter {
-    animation: rowAppear 0.3s ease;
+    animation: rowAppear 0.3s ease both;
 }
 
 @keyframes rowAppear {
