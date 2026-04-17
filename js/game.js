@@ -112,6 +112,14 @@ const BARMAN_STEPS = [
 
 const MAX_ATTEMPTS = 9;
 const CODE_LENGTH = 4;
+const WIN_BARMAN_THUMB = 'assets/backgrounds/barman-thumb-placeholder.png';
+const WIN_COCKTAIL_PLACEHOLDER = 'assets/cocktails/placeholder.png';
+
+for (var cocktailIndex = 0; cocktailIndex < COCKTAILS.length; cocktailIndex++) {
+    if (!COCKTAILS[cocktailIndex].image) {
+        COCKTAILS[cocktailIndex].image = WIN_COCKTAIL_PLACEHOLDER;
+    }
+}
 
 // ============================================
 // СОСТОЯНИЕ
@@ -737,30 +745,35 @@ function calculateHints(guess, secret) {
 
 function showWin() {
     var cocktail = state.cocktail;
+    var attemptCount = state.history.length;
 
-    document.getElementById('win-emoji').textContent = cocktail.emoji;
+    var barmanThumb = document.getElementById('win-barman-thumb');
+    barmanThumb.src = WIN_BARMAN_THUMB;
+
+    var winImage = document.getElementById('win-image');
+    winImage.src = cocktail.image || WIN_COCKTAIL_PLACEHOLDER;
     document.getElementById('win-name').textContent = cocktail.name;
     document.getElementById('win-legend').textContent = cocktail.legend;
-    document.getElementById('win-stats').textContent = 'Угадано с ' + state.history.length + '-й попытки';
+    document.getElementById('win-stats').textContent = 'Угадано с ' + attemptCount + '-й попытки';
+
+    var reactionEl = document.getElementById('win-reaction');
+    if (attemptCount <= 3) {
+        reactionEl.textContent = 'Безупречно! Ты чувствуешь вкус так же, как я!';
+    } else if (attemptCount <= 6) {
+        reactionEl.textContent = 'Отличная работа. Хороший вкус и крепкие нервы.';
+    } else {
+        reactionEl.textContent = 'Добрался до истины. В баре такое тоже уважают.';
+    }
 
     var recipeContainer = document.getElementById('win-recipe');
     recipeContainer.innerHTML = '';
 
     for (var i = 0; i < cocktail.recipe.length; i++) {
         var ing = getIngredient(cocktail.recipe[i]);
-
-        var step = document.createElement('span');
-        step.className = 'recipe-step';
-        step.appendChild(createIngredientIconEl(ing));
-        step.appendChild(document.createTextNode(' ' + ing.name));
-        recipeContainer.appendChild(step);
-
-        if (i < cocktail.recipe.length - 1) {
-            var arrow = document.createElement('span');
-            arrow.className = 'recipe-arrow';
-            arrow.textContent = '→';
-            recipeContainer.appendChild(arrow);
-        }
+        var iconWrap = document.createElement('span');
+        iconWrap.className = 'win-ingredient';
+        iconWrap.appendChild(createIngredientIconEl(ing));
+        recipeContainer.appendChild(iconWrap);
     }
 
     goToScreen('screen-win');

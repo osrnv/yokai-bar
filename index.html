@@ -59,16 +59,31 @@
     <!-- ===== ЭКРАН 4: ПОБЕДА ===== -->
     <div id="screen-win" class="screen">
         <div class="result-container">
-            <div class="barman-portrait">🧑‍🍳</div>
-            <div class="barman-reaction">«Безупречно. Ты чувствуешь вкус так же, как я.»</div>
-            <div class="cocktail-card">
-                <div class="cocktail-emoji" id="win-emoji">🍸</div>
-                <h2 id="win-name" class="cocktail-name"></h2>
-                <div id="win-recipe" class="cocktail-recipe"></div>
-                <p id="win-legend" class="cocktail-legend"></p>
+            <div id="win-stats" class="result-stats"></div>
+
+            <div class="win-dialogue">
+                <img
+                    id="win-barman-thumb"
+                    class="win-barman-thumb"
+                    src="assets/backgrounds/barman-thumb-placeholder.png"
+                    alt="Бармен"
+                >
+                <div id="win-reaction" class="barman-reaction">Безупречно! Ты чувствуешь вкус так же, как я!</div>
             </div>
 
-            <div id="win-stats" class="result-stats"></div>
+            <div class="cocktail-image-frame">
+                <img
+                    id="win-image"
+                    class="cocktail-image"
+                    src="assets/cocktails/placeholder.png"
+                    alt="Коктейль"
+                >
+            </div>
+
+            <h2 id="win-name" class="cocktail-name"></h2>
+            <p id="win-legend" class="cocktail-legend"></p>
+
+            <div id="win-recipe" class="cocktail-ingredients" aria-label="Ингредиенты коктейля"></div>
 
             <button class="btn btn-next" onclick="nextCocktail()">
                 Ещё коктейль

@@ -552,8 +552,7 @@ body {
    ============================================ */
 
 #screen-win {
-    background: linear-gradient(180deg, #1a1e14 0%, #2a2818 50%, #1a1e14 100%);
-    justify-content: center;
+    background: linear-gradient(180deg, #0A0E14 0%, #1A0A0E 100%);
 }
 
 #screen-lose {
@@ -564,93 +563,148 @@ body {
 
 .result-container {
     text-align: center;
-    padding: 16px 16px var(--screen-bottom);
+    padding: 14px 12px var(--screen-bottom);
     max-width: 440px;
     width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.result-emoji {
-    font-size: 4em;
-    margin-bottom: 20px;
+.result-container .btn {
+    margin: 10px auto 0;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.win-dialogue {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.win-barman-thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .barman-reaction {
-    font-style: italic;
-    color: #a09888;
-    margin-bottom: 24px;
-    font-size: 0.95em;
-    line-height: 1.5;
-}
-
-/* Карточка коктейля */
-.cocktail-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(196, 168, 122, 0.2);
+    background: rgba(214, 210, 220, 0.2);
     border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
+    text-align: left;
+    color: #e8e0d4;
+    padding: 14px 16px;
+    font-size: 1em;
+    line-height: 1.35;
 }
 
-.cocktail-emoji {
-    font-size: 3em;
-    margin-bottom: 8px;
+.cocktail-image-frame {
+    width: min(100%, 320px);
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.cocktail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
 }
 
 .cocktail-name {
-    font-size: 1.4em;
+    font-size: clamp(2.2rem, 7vw, 3rem);
     font-weight: 300;
-    color: #f0e6d3;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
+    color: #f3f1f5;
+    letter-spacing: 0.5px;
+    line-height: 1.05;
+    margin-top: 8px;
 }
 
-.cocktail-recipe {
+.cocktail-ingredients {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 20px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
-.recipe-step {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 0.8em;
-    color: #c4b8a4;
+.win-ingredient {
+    width: 64px;
+    height: 64px;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
 }
 
-.recipe-step .ingredient-icon {
-    width: 1.15em;
-    height: 1.15em;
+.win-ingredient .ingredient-icon {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    flex-shrink: 0;
 }
 
-.recipe-step .ingredient-emoji {
+.win-ingredient .ingredient-emoji {
+    font-size: 2.8em;
     line-height: 1;
 }
 
-.recipe-arrow {
-    color: #5a5450;
-    font-size: 0.8em;
-}
-
 .cocktail-legend {
-    font-style: italic;
-    font-size: 0.85em;
-    color: #8a8070;
-    line-height: 1.6;
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+    color: #efedf2;
+    line-height: 1.35;
+    margin-top: 2px;
 }
 
 .result-stats {
-    margin-bottom: 20px;
-    font-size: 0.95em;
-    color: #a09888;
+    font-size: clamp(0.9rem, 2.6vw, 1.05rem);
+    color: #f3f1f5;
+    line-height: 1.25;
+    margin-top: 4px;
+}
+
+#screen-win .btn-next {
+    max-width: 100%;
+}
+
+@media (max-height: 760px) {
+    .result-container {
+        gap: 10px;
+    }
+
+    .win-barman-thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .barman-reaction {
+        padding: 12px 14px;
+        font-size: 0.95em;
+    }
+
+    .cocktail-name {
+        font-size: clamp(1.9rem, 6.2vw, 2.4rem);
+    }
+
+    .cocktail-legend {
+        font-size: clamp(0.88rem, 2.8vw, 1.02rem);
+    }
+
+    .win-ingredient {
+        width: 56px;
+        height: 56px;
+    }
 }
 
 /* ============================================
