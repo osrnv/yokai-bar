@@ -609,10 +609,10 @@ body {
     width: min(100%, 320px);
     margin: 0 auto;
     aspect-ratio: 1 / 1;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.45);
-    overflow: hidden;
-    border-radius: 2px;
+    border: none;
+    background: transparent;
+    overflow: visible;
+    border-radius: 0;
 }
 
 .cocktail-image {
@@ -672,10 +672,6 @@ body {
     color: #f3f1f5;
     line-height: 1.25;
     margin-top: 4px;
-}
-
-#screen-win .btn-next {
-    max-width: 100%;
 }
 
 @media (max-height: 760px) {

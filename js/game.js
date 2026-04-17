@@ -18,73 +18,85 @@ const COCKTAILS = [
         name: 'Слеза Кицунэ',
         recipe: ['umeshu', 'sakura', 'yuzu', 'soda'],
         legend: 'Говорят, лис плачет раз в сто лет. Никто не знает почему.',
-        emoji: '🦊'
+        emoji: '🦊',
+        image: 'assets/cocktails/kitsune.png'
     },
     {
         name: 'Гнев Они',
         recipe: ['sake', 'ginger', 'persim', 'soda'],
         legend: 'Чистая ярость. Бармен рекомендует не задерживать во рту.',
-        emoji: '👹'
+        emoji: '👹',
+        image: 'assets/cocktails/oni.png'
     },
     {
         name: 'Последний Апрель',
         recipe: ['sakura', 'yuzu', 'sake', 'soda'],
         legend: 'Некоторые призраки появляются только когда цветёт сакура.',
-        emoji: '🌸'
+        emoji: '🌸',
+        image: 'assets/cocktails/april.png'
     },
     {
         name: 'Ухмылка Бакэнэко',
         recipe: ['matcha', 'ginger', 'umeshu', 'persim'],
         legend: 'Кошка прожила слишком долго. Теперь она пьёт за стойкой.',
-        emoji: '🐱'
+        emoji: '🐱',
+        image: 'assets/cocktails/cat.png'
     },
     {
         name: 'Фонарь О-Бон',
         recipe: ['sake', 'persim', 'sakura', 'umeshu'],
         legend: 'Каждый август мёртвые возвращаются. Им тоже хочется выпить.',
-        emoji: '🏮'
+        emoji: '🏮',
+        image: 'assets/cocktails/flashlight.png'
     },
     {
         name: 'Дыхание Леса',
         recipe: ['matcha', 'soda', 'yuzu', 'ginger'],
         legend: 'В бамбуковой роще нет эха. Только шёпот.',
-        emoji: '🎋'
+        emoji: '🎋',
+        image: 'assets/cocktails/forest.png'
     },
     {
         name: 'Крыло Цуру',
         recipe: ['sake', 'yuzu', 'soda', 'matcha'],
         legend: 'Журавль сложил крылья и стал женщиной. Утром она исчезнет.',
-        emoji: '🦢'
+        emoji: '🦢',
+        image: 'assets/cocktails/wing.png'
     },
     {
         name: 'Тропа Тэнгу',
         recipe: ['ginger', 'persim', 'umeshu', 'sakura'],
         legend: 'Горный демон не спускается к людям. Люди поднимаются к нему.',
-        emoji: '⛰️'
+        emoji: '⛰️',
+        image: 'assets/cocktails/trail.png'
     },
     {
         name: 'Маска Но',
         recipe: ['sake', 'umeshu', 'soda', 'ginger'],
         legend: 'Говорят, у этого коктейля два вкуса. Но второй ты узнаёшь только наутро.',
-        emoji: '🎭'
+        emoji: '🎭',
+        image: 'assets/cocktails/mask.png'
     },
     {
         name: 'Тёмный Тории',
         recipe: ['matcha', 'umeshu', 'persim', 'ginger'],
         legend: 'За каждыми воротами — другой мир. За этими — темнее обычного.',
-        emoji: '⛩️'
+        emoji: '⛩️',
+        image: 'assets/cocktails/torii.png'
     },
     {
         name: 'Нить Дзёрогумо',
         recipe: ['umeshu', 'matcha', 'sakura', 'yuzu'],
         legend: 'Женщина-паук плетёт паутину из шёлка и обещаний.',
-        emoji: '🕸️'
+        emoji: '🕸️',
+        image: 'assets/cocktails/spider.png'
     },
     {
         name: 'Дыхание Рю',
         recipe: ['sake', 'ginger', 'matcha', 'yuzu'],
         legend: 'Дракон не дышит огнём. Он дышит туманом.',
-        emoji: '🐉'
+        emoji: '🐉',
+        image: 'assets/cocktails/dragon.png'
     },
 ];
 
@@ -112,8 +124,8 @@ const BARMAN_STEPS = [
 
 const MAX_ATTEMPTS = 9;
 const CODE_LENGTH = 4;
-const WIN_BARMAN_THUMB = 'assets/backgrounds/barman-thumb-placeholder.png';
-const WIN_COCKTAIL_PLACEHOLDER = 'assets/cocktails/placeholder.png';
+const WIN_BARMAN_THUMB = 'assets/barmen win.png';
+const WIN_COCKTAIL_PLACEHOLDER = 'assets/placeholder.svg';
 
 for (var cocktailIndex = 0; cocktailIndex < COCKTAILS.length; cocktailIndex++) {
     if (!COCKTAILS[cocktailIndex].image) {
@@ -748,9 +760,17 @@ function showWin() {
     var attemptCount = state.history.length;
 
     var barmanThumb = document.getElementById('win-barman-thumb');
+    barmanThumb.onerror = function() {
+        this.onerror = null;
+        this.src = WIN_BARMAN_THUMB;
+    };
     barmanThumb.src = WIN_BARMAN_THUMB;
 
     var winImage = document.getElementById('win-image');
+    winImage.onerror = function() {
+        this.onerror = null;
+        this.src = WIN_COCKTAIL_PLACEHOLDER;
+    };
     winImage.src = cocktail.image || WIN_COCKTAIL_PLACEHOLDER;
     document.getElementById('win-name').textContent = cocktail.name;
     document.getElementById('win-legend').textContent = cocktail.legend;
