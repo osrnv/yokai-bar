@@ -2,6 +2,10 @@
    БАЗОВЫЕ СТИЛИ
    ============================================ */
 
+:root {
+    --screen-bottom: 16px;
+}
+
    * {
     margin: 0;
     padding: 0;
@@ -52,7 +56,7 @@ body {
 
 .welcome-container {
     text-align: center;
-    padding: 24px 24px 60px;
+    padding: 24px 24px var(--screen-bottom);
     max-width: 400px;
     width: 100%;
 }
@@ -78,7 +82,7 @@ body {
 }
 
 /* Иллюстрация — абсолютно спозиционирована внутри #screen-barman и
-   ограничена по ширине так же, как игровое поле (max-width: 400px).
+   ограничена по ширине так же, как игровое поле (max-width: 440px).
    left: 50% + translateX(-50%) — горизонтальное центрирование внутри screen.
    top/bottom: 0 — тянется на всю высоту этой колонки.
    display: grid + grid-area 1/1 на обеих <img> кладёт их в одну ячейку:
@@ -91,7 +95,7 @@ body {
     transform: translateX(-50%);
     display: grid;
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
     z-index: 0;
 }
 
@@ -112,16 +116,16 @@ body {
 }
 
 /* Оверлей с диалогом и кнопкой — накладывается поверх иллюстрации,
-   ограничен той же max-width: 400px и прибит к низу колонки. */
+   ограничен той же max-width: 440px и прибит к низу колонки. */
 .barman-overlay {
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
     z-index: 1;
-    padding: 80px 24px 32px;
+    padding: 80px 24px var(--screen-bottom);
     text-align: center;
     background: linear-gradient(to top,
         rgba(10, 10, 20, 0.92) 0%,
@@ -139,7 +143,6 @@ body {
     border-radius: 16px;
     padding: 20px;
     margin: 0 auto 24px;
-    max-width: 400px;
     text-align: left;
     min-height: 150px;
 }
@@ -201,7 +204,8 @@ body {
     transition: transform 0.15s, opacity 0.15s;
     letter-spacing: 1px;
     width: 100%;
-    max-width: 300px;
+    height: 56px;
+    max-width: 340px;
 }
 
 .btn:active {
@@ -219,9 +223,15 @@ body {
     color: #1a1520;
 }
 
+.btn-accept,
+.btn-confirm,
+.btn-next,
+.btn-retry {
+    background: url('../assets/backgrounds/button.png') center/100% 100% no-repeat;
+    color: #f0e6d3;
+}
+
 .btn-accept {
-    background: linear-gradient(135deg, #c4a87a, #a08050);
-    color: #1a1520;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s;
@@ -233,21 +243,9 @@ body {
 }
 
 .btn-confirm {
-    background: linear-gradient(135deg, #c4a87a, #a08050);
-    color: #1a1520;
     margin-top: auto;
     flex-shrink: 0;
     align-self: center;
-}
-
-.btn-next {
-    background: linear-gradient(135deg, #7aaa6e, #5a8a4e);
-    color: #1a1520;
-}
-
-.btn-retry {
-    background: linear-gradient(135deg, #aa6e6e, #8a4e4e);
-    color: #f0e6d3;
 }
 
 /* ============================================
@@ -265,7 +263,7 @@ body {
     max-width: 400px;
     height: 100vh;
     height: 100dvh;
-    padding: 12px 16px 16px;
+    padding: 12px 16px var(--screen-bottom);
     margin: 0 auto;
 }
 
@@ -559,14 +557,15 @@ body {
 }
 
 #screen-lose {
-    background: linear-gradient(180deg, #1a1418 0%, #201418 50%, #1a1418 100%);
-    justify-content: center;
+    background: #0a0a14;
+    padding: 0;
+    overflow: hidden;
 }
 
 .result-container {
     text-align: center;
-    padding: 24px;
-    max-width: 400px;
+    padding: 16px 16px var(--screen-bottom);
+    max-width: 440px;
     width: 100%;
 }
 
@@ -675,8 +674,12 @@ body {
    ============================================ */
 
 @media (max-height: 680px) {
+    :root {
+        --screen-bottom: 12px;
+    }
+
     .game-container {
-        padding: 8px 12px 12px;
+        padding: 8px 12px var(--screen-bottom);
     }
 
     .slot {

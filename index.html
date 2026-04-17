@@ -78,11 +78,14 @@
 
     <!-- ===== ЭКРАН 5: ПОРАЖЕНИЕ ===== -->
     <div id="screen-lose" class="screen">
-        <div class="result-container">
-            <div class="result-emoji" id="lose-emoji">🧑‍🍳</div>
-            <p class="barman-reaction" id="lose-phrase">
-                «Не каждый способен понять этот бар. Может, в следующий раз.»
-            </p>
+        <div class="barman-illustration">
+            <img class="barman-img barman-img--active" src="assets/backgrounds/barmen pose 3.png" alt="Бармен">
+        </div>
+        <div class="barman-overlay">
+            <div class="dialogue-box">
+                <p class="barman-name">Бармен</p>
+                <div id="lose-phrase" class="barman-text">«Не каждый способен понять этот бар. Может, в следующий раз.»</div>
+            </div>
             <button class="btn btn-retry" id="btn-retry" onclick="retryCocktail()">Попробовать снова</button>
         </div>
     </div>

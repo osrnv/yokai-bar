@@ -101,7 +101,7 @@ const BARMAN_STEPS = [
     },
     {
         pose: 2,
-        html: 'Я буду давать подсказки после каждой попытки:' +
+        html: 'После каждой попытки будут подсказки:' +
               '<div class="hint-legend">' +
                   '<div class="hint-legend-item"><span class="moon">🌕</span><span>— ингредиент угадан и стоит на своём месте.</span></div>' +
                   '<div class="hint-legend-item"><span class="moon">🌙</span><span>— ингредиент есть в рецепте, но место не то.</span></div>' +
