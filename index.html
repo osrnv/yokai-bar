@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Бар «Ёкай»</title>
+    <title>Hidden Spirits</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍶</text></svg>">
 </head>
@@ -60,31 +60,37 @@
     <!-- ===== ЭКРАН 4: ПОБЕДА ===== -->
     <div id="screen-win" class="screen">
         <div class="result-container">
-            <div id="win-stats" class="result-stats"></div>
+            <div class="win-block win-block--top">
+                <div id="win-stats" class="result-stats"></div>
 
-            <div class="win-dialogue">
-                <img
-                    id="win-barman-thumb"
-                    class="win-barman-thumb"
-                    src="assets/barmen win.png"
-                    alt="Бармен"
-                >
-                <div id="win-reaction" class="barman-reaction">Безупречно! Ты чувствуешь вкус так же, как я!</div>
+                <div class="win-dialogue">
+                    <div class="win-barman-thumb-frame">
+                        <img
+                            id="win-barman-thumb"
+                            class="win-barman-thumb"
+                            src="assets/barmen win.png"
+                            alt="Бармен"
+                        >
+                    </div>
+                    <div id="win-reaction" class="barman-reaction">Безупречно! Ты чувствуешь вкус так же, как я!</div>
+                </div>
             </div>
 
-            <div class="cocktail-image-frame">
-                <img
-                    id="win-image"
-                    class="cocktail-image"
-                    src="assets/placeholder.svg"
-                    alt="Коктейль"
-                >
+            <div class="win-block win-block--main">
+                <div class="cocktail-image-frame">
+                    <img
+                        id="win-image"
+                        class="cocktail-image"
+                        src="assets/placeholder.svg"
+                        alt="Коктейль"
+                    >
+                </div>
+
+                <h2 id="win-name" class="cocktail-name"></h2>
+                <p id="win-legend" class="cocktail-legend"></p>
+
+                <div id="win-recipe" class="cocktail-ingredients" aria-label="Ингредиенты коктейля"></div>
             </div>
-
-            <h2 id="win-name" class="cocktail-name"></h2>
-            <p id="win-legend" class="cocktail-legend"></p>
-
-            <div id="win-recipe" class="cocktail-ingredients" aria-label="Ингредиенты коктейля"></div>
 
             <button class="btn btn-next" onclick="nextCocktail()">
                 Ещё коктейль
